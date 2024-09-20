@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jaspersoft Dashboards</title>
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        .menu {
+            width: 200px;
+            background-color: #333;
+            color: white;
+            padding-top: 20px;
+            text-align: center;
+            overflow: auto;
+        }
+        .menu button {
+            width: 100%;
+            padding: 15px;
+            margin: 5px 0;
+            background-color: #444;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .menu button:hover {
+            background-color: #555;
+        }
+        .content {
+            width: 100%;
+            padding: 20px;
+            margin-left: 15%;
+            justify-content: end;
+            overflow: hidden; /* Prevents overflow */
+        }
+        #dashboardContainer {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Menu -->
+        <div class="menu">
+            <button onclick="loadDashboard('1._Supermart_Dashboard')">Supermart Dashboard</button>
+            <button onclick="loadDashboard('mine')">Mine</button>
+            <button onclick="loadDashboard('5._Top_Performers')">Top Performers</button>
+            <button onclick="loadDashboard('3.1_Sales_Metrics')">Sales Metrics</button>
+        </div>
+        
+        <!-- Right Content Area -->
+        <div class="content">
+            <div id="dashboardContainer"></div>
+        </div>
+    </div>
+
+    <script src="http://localhost:8080/jasperserver-pro/client/visualize.js"></script>
+    <script>
+        function loadDashboard(dashboardName) {
+            var jasperserverUrl = 'http://localhost:8080/jasperserver-pro';
+            var username = 'jasperadmin';
+            var password = 'jasperadmin';
+            var baseR = "/public/Samples/Dashboards/";
+
+            // Clear previous dashboard content
+            var container = document.getElementById('dashboardContainer');
+            container.innerHTML = '';
+
+            visualize({
+                server: jasperserverUrl,
+                auth: {
+                    name: username,
+                    password: password,
+                    organization: ""
+                }
+            }, function(v) {
+                // Embed the dashboard
+                v.dashboard({
+                    resource: baseR + dashboardName,
+                    container: "#dashboardContainer",
+                    success: function() {
+                        console.log("Dashboard successfully embedded!");
+                    },
+                    error: function(err) {
+                        console.error("Error embedding dashboard: ", err);
+                    }
+                });
+            });
+        }
+
+        // Optional: Load a default dashboard on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboard('1._Supermart_Dashboard');
+        });
+    </script>
+</body>
+</html>
